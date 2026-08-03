@@ -9,7 +9,7 @@ export function Logo() {
       </div>
 
       <div className="flex flex-col leading-none">
-        <span className="text-lg font-bold">B2 MILK</span>
+        <span className="text-lg font-bold">MILKY</span>
         <span className="text-xs text-muted-foreground">
           Fresh Milk Delivery
         </span>
