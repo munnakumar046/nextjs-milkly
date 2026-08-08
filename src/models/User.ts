@@ -1,6 +1,4 @@
 import { Schema, model, models } from "mongoose";
-import { USER_ROLE } from "@/constants/roles";
-import { AUTH_PROVIDER } from "@/constants/auth-provider";
 
 const userSchema = new Schema(
   {
@@ -15,7 +13,6 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       lowercase: true,
-      trim: true,
     },
 
     password: {
@@ -25,24 +22,23 @@ const userSchema = new Schema(
 
     image: {
       type: String,
-      default: null,
-    },
-
-    provider: {
-      type: String,
-      enum: Object.values(AUTH_PROVIDER),
-      default: AUTH_PROVIDER.CREDENTIALS,
+      default: "",
     },
 
     role: {
       type: String,
-      enum: Object.values(USER_ROLE),
-      default: USER_ROLE.CUSTOMER,
+      enum: ["customer", "admin"],
+      default: "customer",
     },
 
-    isVerified: {
+    emailVerified: {
       type: Boolean,
       default: false,
+    },
+
+    provider: {
+      type: String,
+      default: "credentials",
     },
   },
   {
