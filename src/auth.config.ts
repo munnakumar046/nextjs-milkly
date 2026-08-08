@@ -4,14 +4,15 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
 import { connectDB } from "@/lib/db";
+import { env } from "@/lib/env";
 import { User } from "@/models/User";
 import { LoginSchema } from "@/validations/auth";
 
 const authConfig: NextAuthConfig = {
   providers: [
     Google({
-      clientId: process.env.AUTH_GOOGLE_ID!,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+      clientId: env.AUTH_GOOGLE_ID,
+      clientSecret: env.AUTH_GOOGLE_SECRET,
     }),
 
     Credentials({

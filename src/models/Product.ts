@@ -1,6 +1,38 @@
-import { Schema, model, models, Types } from "mongoose";
+import { Schema, model, models, Types, type Model } from "mongoose";
 
-const productSchema = new Schema(
+import { PRODUCT_UNITS, type ProductUnit } from "@/constants/product";
+
+export { PRODUCT_UNITS };
+export type { ProductUnit };
+
+export interface IProductNutrition {
+  calories: number;
+  protein: number;
+  fat: number;
+  carbs: number;
+}
+
+export interface IProduct {
+  name: string;
+  slug: string;
+  description: string;
+  shortDescription: string;
+  category: Types.ObjectId;
+  images: string[];
+  brand: string;
+  unit: ProductUnit;
+  quantity: number;
+  price: number;
+  comparePrice: number;
+  stock: number;
+  isFeatured: boolean;
+  isAvailable: boolean;
+  nutrition: IProductNutrition;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const productSchema = new Schema<IProduct>(
   {
     name: {
       type: String,
@@ -27,7 +59,7 @@ const productSchema = new Schema(
     },
 
     category: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Category",
       required: true,
     },
@@ -45,7 +77,7 @@ const productSchema = new Schema(
 
     unit: {
       type: String,
-      enum: ["ml", "L", "g", "kg", "piece"],
+      enum: PRODUCT_UNITS,
       required: true,
     },
 
@@ -97,4 +129,6 @@ productSchema.index({ name: "text", description: "text" });
 productSchema.index({ category: 1 });
 productSchema.index({ slug: 1 });
 
-export const Product = models.Product || model("Product", productSchema);
+export const Product: Model<IProduct> =
+  (models.Product as Model<IProduct>) ||
+  model<IProduct>("Product", productSchema);

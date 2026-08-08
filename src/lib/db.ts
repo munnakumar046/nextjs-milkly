@@ -1,13 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Missing MONGODB_URI");
-}
-
-// After the check, create a string constant
-const uri: string = MONGODB_URI;
+import { env } from "@/lib/env";
 
 declare global {
   var mongooseCache:
@@ -29,14 +22,16 @@ export async function connectDB() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(uri).then((mongooseInstance) => {
-      console.log("✅ MongoDB Connected");
-      console.log("Database:", mongooseInstance.connection.name);
-      return mongooseInstance;
-    });
+    cached.promise = mongoose.connect(env.MONGODB_URI);
   }
 
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    // Don't cache a failed connection attempt - the next call should retry.
+    cached.promise = null;
+    throw error;
+  }
 
   return cached.conn;
 }

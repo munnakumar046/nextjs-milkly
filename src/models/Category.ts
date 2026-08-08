@@ -1,6 +1,16 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model, models, type Model } from "mongoose";
 
-const categorySchema = new Schema(
+export interface ICategory {
+  name: string;
+  slug: string;
+  image: string;
+  description: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const categorySchema = new Schema<ICategory>(
   {
     name: {
       type: String,
@@ -36,4 +46,6 @@ const categorySchema = new Schema(
   },
 );
 
-export const Category = models.Category || model("Category", categorySchema);
+export const Category: Model<ICategory> =
+  (models.Category as Model<ICategory>) ||
+  model<ICategory>("Category", categorySchema);

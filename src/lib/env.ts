@@ -17,4 +17,16 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string().min(1),
 });
 
-export const env = envSchema.parse(process.env);
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  const missing = parsed.error.issues
+    .map((issue) => `  - ${issue.path.join(".")}: ${issue.message}`)
+    .join("\n");
+
+  throw new Error(
+    `Invalid or missing environment variables:\n${missing}\n\nCheck your .env.local file against the variables required in src/lib/env.ts.`,
+  );
+}
+
+export const env = parsed.data;
